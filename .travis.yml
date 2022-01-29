@@ -8,6 +8,18 @@ before_install:
 script:
   - docker run stefanos87/react-test npm test -- --coverage
 
+after_success:
+  - docker build -t stefanos87/multi-client ./client
+  - docker build -t stefanos87/multi-nginx ./nginx
+  - docker build -t stefanos87/multi-server ./server
+  - docker build -t stefanos87/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push stefanos87/multi-client
+  - docker push stefanos87/multi-nginx
+  - docker push stefanos87/multi-server
+  - docker push stefanos87/multi-worker
 
 
 # deploy:
